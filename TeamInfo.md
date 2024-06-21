@@ -19,7 +19,7 @@
 
 |   Info      |        Description     |
 | ----------- | ---------------------- |
-|  Title      |     TBD     |
+|  Title      |  The Chosen 11  |
 | System URL  |      TBD    |
 | Video Link  |      TBD    |
 
