@@ -25,5 +25,6 @@
 
 ## Project Summary
 
-The Chosen 11 is a web application designed to help users create optimal fantasy football teams based on their preferences and player statistics collected over the last 10 years. The application will analyze real-world player data and user-defined criteria to recommend the best players for a fantasy football team. Users will be able to create, update, and manage their teams, with recommendations and insights provided by the system to maximize their chances of winning in various fantasy leagues. 
+The Chosen 11 is a web application designed to help users create optimal fantasy football teams based on their preferences and player statistics collected over the last 10 years. The application will analyze real-world player data and user-defined criteria to recommend the best players for a fantasy football team for the English Premier League. Users will be able to create, update, and manage their teams, with recommendations and insights provided by the system to maximize their chances of winning in various fantasy leagues. 
+
 
