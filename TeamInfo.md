@@ -12,8 +12,7 @@
 | Member1     |   jxiao27@illinois.edu  |
 | Member2     |         Rhea Tiwari               |
 | Member2     |   rtiwari3@illinois.edu                   |
-| Member3     |                        |
-| Member3     |                     |
+
 
 ## Project Information
 
