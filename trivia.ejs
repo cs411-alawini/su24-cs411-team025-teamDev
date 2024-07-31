@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Trivia</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Fan Board</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/fanboard">Fan Board</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/playersearch">Player Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/trivia">Trivia</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container mt-4">
+    <div class="card">
+      <div class="card-body">
+        <h2>Select a trivia question below</h2>
+        <form id="triviaForm">
+          <div class="form-group">
+            <label for="triviaSelect">Select a trivia question:</label>
+            <select class="form-control" id="triviaSelect" name="triviaId">
+              <% triviaList.forEach(function(trivia) { %>
+                <option value="<%= trivia.id %>"><%= trivia.question %></option>
+              <% }) %>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+    <div id="triviaDetail" class="mt-4"></div>
+  </div>
+  <script src="/trivia.js">
+$(document).ready(function() {
+    $('#triviaForm').submit(function(event) {
+        event.preventDefault();
+
+        const triviaId = $('#triviaSelect').val();
+        console.log('Selected Trivia ID:', triviaId);  // Debugging log
+
+        $.ajax({
+            url: '/trivia/detail',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ triviaId }),
+            success: function(response) {
+                console.log('Trivia Detail Response:', response);  // Debugging log
+                const triviaDetail = $('#triviaDetail');
+                triviaDetail.empty();
+
+                if (response.results && response.results.length > 0) {
+                    const resultItem = $('<pre>').text(JSON.stringify(response.results, null, 2));
+                    triviaDetail.append(resultItem);
+                } else {
+                    triviaDetail.html('<p>No trivia detail found.</p>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching trivia detail:', error);  // Debugging log
+                $('#triviaDetail').html('<p>Error fetching trivia detail.</p>');
+            }
+        });
+    });
+});
+
+</script>
+</body>
+</html>

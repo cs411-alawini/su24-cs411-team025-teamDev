@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title><%= title %></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/fanboard">Fan Board</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/playersearch">Player Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/trivia">Trivia</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container mt-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="text-center mb-4">
+          <div class="avatar bg-success rounded-circle d-inline-flex justify-content-center align-items-center" style="width: 80px; height: 80px;">
+            <i class="fas fa-user text-white" style="font-size: 2.5em;"></i>
+          </div>
+        </div>
+        <h2 class="card-title text-center mb-4">User Data Form</h2>
+        <form id="userForm">
+          <div class="mb-3">
+            <label for="username" class="form-label"><i class="fas fa-user me-2"></i>Name</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="player" class="form-label"><i class="fas fa-futbol me-2"></i>Favorite Player</label>
+            <input type="text" class="form-control" id="player" name="player" required>
+          </div>
+          <div class="mb-3">
+            <label for="team" class="form-label"><i class="fas fa-users me-2"></i>Team</label>
+            <input type="text" class="form-control" id="team" name="team" required>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary mb-2">Submit</button>
+	  </div>
+        </form>
+        <div id="fan-board" class="mt-4">
+          <!-- Fan board details will be displayed here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script>
+$(document).ready(function () {
+    $('#userForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const formData = {
+            username: $('#username').val(),
+            player: $('#player').val(),
+            team: $('#team').val()
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '/fanboard/submit',
+            data: formData,
+            success: function () {
+		console.log('wtf');
+                fetchFanBoard();
+            },
+            error: function (err) {
+                console.error('Error:', err);
+            }
+        });
+    });
+
+    function fetchFanBoard() {
+        $.ajax({
+            type: 'GET',
+            url: '/view-board',
+            success: function (data) {
+                let fanBoardHtml = '<h3 class="mt-4">Fan Board</h3>';
+                fanBoardHtml += '<ul class="list-group">';
+                data.forEach(user => {
+                    fanBoardHtml += `<li class="list-group-item">
+                        <strong>Name:</strong> ${user.UserId} <br>
+                        <strong>Favorite Player:</strong> ${user.PlayerName} <br>
+                        <strong>Team:</strong> ${user.TeamName}
+                        <br>
+                        <button class="btn btn-warning btn-sm mt-2 modify-btn" data-id="${user.UserId}">Modify</button>
+                        <button class="btn btn-danger btn-sm mt-2 delete-btn" data-id="${user.UserId}">Delete</button>
+                    </li>`;
+                });
+                fanBoardHtml += '</ul>';
+                $('#fan-board').html(fanBoardHtml);
+            },
+            error: function (err) {
+                console.error('Error:', err);
+            }
+        });
+    }
+
+    $(document).on('click', '.modify-btn', function() {
+	const id = $(this).data('id');
+	
+	const updateData = {
+		username : id,
+		player : $('#player').val(),
+		team : $('#team').val()
+	}
+
+        $.ajax({
+            type: 'POST',
+            url: '/fanboard/update/' + id,
+            data: updateData,
+            success: function () {
+				alert('Modified');
+                fetchFanBoard();
+            },
+            error: function (err) {
+                console.error('Error:', err);
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-btn', function() {
+        const id = $(this).data('id');
+        if (confirm('Are you sure you want to delete this record?')) {
+            $.ajax({
+                url: '/fanboard/delete/' + id,
+                type: 'DELETE',
+                success: function () {
+                    alert('Record deleted successfully');
+                    fetchFanBoard();
+                },
+                error: function (err) {
+                    console.error('Error:', err);
+                }
+            });
+        }
+    });
+});
+</script>
+
+</body>
+</html>
